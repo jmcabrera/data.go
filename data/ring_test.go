@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"testing"
 	"time"
 )
@@ -57,7 +56,11 @@ func TestRingReadOverlaps(t *testing.T) {
 
  */
 func BenchmarkWithRing(b *testing.B) {
+	b.StopTimer()
+	v := NewRing(100, func() interface{} { return 10 })
+	b.ResetTimer()
+	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		fmt.Sprintf("hello")
+		v.Next()
 	}
 }
