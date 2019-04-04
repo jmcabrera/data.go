@@ -49,7 +49,10 @@ Stop stops producing events in the ring
 func (r *Ring) Stop() {
 	r.run = false
 	// wake up the writer, just in case
-	r.ch <- "stop"
+	select {
+	case r.ch <- "stop":
+	default:
+	}
 }
 
 /*
@@ -71,7 +74,10 @@ func (r *Ring) Next() interface{} {
 		for !atomic.CompareAndSwapInt32(&r.delay, read, (read+1)%int32(r.Length())) {
 			read = r.delay
 		}
-		r.ch <- "GoOn"
+		select {
+		case r.ch <- "GoOn":
+		default:
+		}
 	}
 
 	return res
